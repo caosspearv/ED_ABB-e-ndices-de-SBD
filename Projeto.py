@@ -6,11 +6,10 @@ class Registro:
     def __init__(self, cpf: str, nome: str, data_nascimento: str, deletado=False):
         self.cpf = cpf  # chave de ordenação
         self.nome = nome
-        self.data_nascimento = datetime.strptime(data_nascimento, "%d/%m/%Y")
+        self.data_nascimento = datetime.strptime(data_nascimento, "%d/%m/%Y") if data_nascimento else None
         self.deletado = deletado  # flag para marcar registro deletado
 
     def __lt__(self, outro):
-        # Comparação baseada no CPF
         return self.cpf < outro.cpf
 
     def __eq__(self, outro):
@@ -18,14 +17,18 @@ class Registro:
 
     def __str__(self):
         status = "DELETADO" if self.deletado else "ATIVO"
-        return f"CPF: {self.cpf}, Nome: {self.nome}, Nasc: {self.data_nascimento.strftime('%d/%m/%Y')} - {status}"
+        if self.data_nascimento is not None:
+            data_str = self.data_nascimento.strftime('%d/%m/%Y')
+        else:
+            data_str = "N/A"
+        return f"CPF: {self.cpf}, Nome: {self.nome}, Nasc: {data_str} - {status}"
 
     def zerar(self):
-        # Marca o registro como deletado e limpa os dados
         self.cpf = ""
         self.nome = ""
         self.data_nascimento = None
         self.deletado = True
+
 
 class No:
     def __init__(self, registro: Registro, posicao: int):
